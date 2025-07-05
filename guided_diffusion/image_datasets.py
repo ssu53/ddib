@@ -50,6 +50,7 @@ def load_data(
         class_names = [bf.basename(path).split("_")[0] for path in all_files]
         sorted_classes = {x: i for i, x in enumerate(sorted(set(class_names)))}
         classes = [sorted_classes[x] for x in class_names]
+    print(f"{classes=}")
     dataset = ImageDataset(
         image_size,
         all_files,

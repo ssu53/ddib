@@ -100,7 +100,9 @@ def create_model_and_diffusion(
         resblock_updown,
         use_fp16,
         use_new_attention_order,
-        num_classes=1000
+        num_classes=1000,
+        conv_resample=True,
+        dims=2,
 ):
     model = create_model(
         image_size,
@@ -108,6 +110,8 @@ def create_model_and_diffusion(
         num_res_blocks,
         in_channels=in_channels,
         channel_mult=channel_mult,
+        conv_resample=conv_resample,
+        dims=dims,
         learn_sigma=learn_sigma,
         class_cond=class_cond,
         use_checkpoint=use_checkpoint,
@@ -141,6 +145,8 @@ def create_model(
         num_res_blocks,
         in_channels=3,
         channel_mult="",
+        conv_resample=True,
+        dims=2,
         learn_sigma=False,
         class_cond=False,
         use_checkpoint=False,
@@ -186,6 +192,8 @@ def create_model(
         attention_resolutions=tuple(attention_ds),
         dropout=dropout,
         channel_mult=channel_mult,
+        conv_resample=conv_resample,
+        dims=dims,
         num_classes=(num_classes if class_cond else None),
         use_checkpoint=use_checkpoint,
         use_fp16=use_fp16,
