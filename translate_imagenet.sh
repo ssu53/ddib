@@ -1,0 +1,3 @@
+MODEL_FLAGS="--attention_resolutions 32,16,8 --class_cond True --diffusion_steps 1000 --image_size 256 --learn_sigma True --noise_schedule linear --num_channels 256 --num_head_channels 64 --num_res_blocks 2 --resblock_updown True --use_fp16 True --use_scale_shift_norm True"
+PATH_TO_VAL_SET="/pasteur/u/shiye/datasets/ILSVRC2012_val"
+python scripts/imagenet_translation.py $MODEL_FLAGS --classifier_scale 1.0 --source 339 --target 340 --val_dir $PATH_TO_VAL_SET

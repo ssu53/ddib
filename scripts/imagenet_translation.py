@@ -63,6 +63,11 @@ def main():
         model.convert_to_fp16()
     model.eval()
 
+    num_params = sum(p.numel() for p in model.parameters())
+    num_params_trainable = sum(p.numel() for p in model.parameters() if p.requires_grad)
+    logger.log(f"model has {num_params:,} params / {num_params_trainable:,} trainable params")
+    from IPython import embed; embed()
+
     logger.log("loading classifier...")
     classifier = create_classifier(**args_to_dict(args, classifier_defaults().keys()))
     classifier.load_state_dict(
@@ -92,12 +97,14 @@ def main():
     target = [int(v) for v in args.target.split(",")]
     source_to_target_mapping = {s: t for s, t in zip(source, target)}
     copy_imagenet_dataset(args.val_dir, source)
+    logger.log(f"{source=}")
+    logger.log(f"{target=}")
 
     logger.log("running image translation...")
     data = load_source_data_for_domain_translation(
         batch_size=args.batch_size,
         image_size=args.image_size,
-        classes=source
+        # classes=source
     )
 
     for i, (batch, extra) in enumerate(data):
@@ -129,6 +136,7 @@ def main():
             clip_denoised=False,
             model_kwargs=source_y,
             device=dist_util.dev(),
+            progress=True,
         )
         logger.log(f"obtained latent representation for {batch.shape[0]} samples...")
         logger.log(f"latent with mean {noise.mean()} and std {noise.std()}")
@@ -142,7 +150,8 @@ def main():
             model_kwargs=target_y,
             cond_fn=cond_fn,
             device=dist_util.dev(),
-            eta=args.eta
+            eta=args.eta,
+            progress=True,
         )
         sample = ((sample + 1) * 127.5).clamp(0, 255).to(th.uint8)
         sample = sample.permute(0, 2, 3, 1)

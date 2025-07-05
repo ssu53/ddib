@@ -95,6 +95,7 @@ def load_source_data_for_domain_translation(
     classes = None
     if class_cond:
         classes = [int(bf.basename(path).split("_")[0]) for path in all_files]
+    print(f"{classes=}")
     dataset = ImageDataset(
         image_size,
         all_files,

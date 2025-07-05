@@ -1,4 +1,7 @@
 .DS_Store
 .idea/
 */__pycache__/*
+guided_diffusion.egg-info/
 samples/
+experiments/
+models/
